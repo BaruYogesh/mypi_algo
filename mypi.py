@@ -1,5 +1,5 @@
 from tryalgo import bipartite_vertex_cover, max_bipartite_matching
-from collections import defaultdict
+import heapq
 
 def powerset(seq):
     if len(seq) <= 1:
@@ -53,8 +53,6 @@ def make_pizzas(toppings: set, prefs: list) -> list:
         i += 1
 
     print(selected_lists)
-      
-# make_pizzas({'a', 'b', 'c'}, [{'a', 'b'}, {'a', 'b'}, {'c'}, {'a', 'c'}])
 
 def make_pizzas_two(toppings, prefs):
 
@@ -65,23 +63,27 @@ def make_pizzas_two(toppings, prefs):
 
     for i, topping_set in enumerate(toppings_powerset):
 
-        topping_set_to_users.append([[], topping_set])
+        topping_set_to_users.append([0, 0, [], topping_set])
         for j, user in enumerate(prefs):
 
             if set(topping_set).issubset(prefs[user]):
-                topping_set_to_users[i][0].append(user)
+                topping_set_to_users[i][2].append(user)
+
+    for i in range(len(topping_set_to_users)):
+        topping_set_to_users[i][0] = -len(topping_set_to_users[i][2])
+        topping_set_to_users[i][1] = -len(topping_set_to_users[i][3])
 
 
-    topping_set_to_users = sorted(topping_set_to_users, key= lambda x: -len(x[0]))
+    heapq.heapify(topping_set_to_users)
+
     print(topping_set_to_users)
 
     selected_pizzas = []
     covered_users = set()
 
-    i = 0
-    while i < len(topping_set_to_users) and len(covered_users) < len(prefs):
+    while topping_set_to_users and len(covered_users) < len(prefs):
 
-        users, t = topping_set_to_users[i]
+        size_users, size_pizza, users, t = heapq.heappop(topping_set_to_users)
 
         if not len(covered_users.intersection(users)):
             selected_pizzas.append((t, len(users)))
@@ -90,13 +92,10 @@ def make_pizzas_two(toppings, prefs):
             i += 1
 
         else:
-            topping_set_to_users[i][0] = list(set(topping_set_to_users[i][0]) - covered_users)
-            p = topping_set_to_users.pop(i)
-            if p[0]:
-                for j in range(i, len(topping_set_to_users)):
-                    if len(topping_set_to_users[j][0]) <= len(p[0]):
-                        topping_set_to_users.insert(j, p)
+            new_userset = list(set(topping_set_to_users[i][0]) - covered_users)
+            new_entry = (-len(new_userset), size_pizza, new_userset, t)
 
+            heapq.heappush(topping_set_to_users, new_entry)
 
     print(selected_pizzas)
 
