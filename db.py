@@ -13,12 +13,23 @@ class User(BaseModel):
 class Topping(BaseModel):
     topping_name = CharField(unique=True)
 
-class Group(BaseModel):
-    group_id = AutoField()
-    group_code = CharField()
+class Room(BaseModel):
+    room_id = AutoField()
+    room_code = CharField()
     active = BooleanField()
-    group_name = CharField()
-    group_owner = ForeignKeyField(User)
+    room_name = CharField()
+    room_owner = ForeignKeyField(User)
+    pizza_order = ForeignKeyField(Pizza_Order)
+
+class Room_Membership(BaseModel):
+    user_id = ForeignKeyField(User)
+    room_id = ForeignKeyField(Room)
+
+class Pizza_Order(BaseModel):
+    room_id = ForeignKeyField(Room)
+    pizza_id
+
+class Pizza
 
 db.connect()
 db.create_tables([User, Topping])
