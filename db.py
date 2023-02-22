@@ -13,6 +13,9 @@ class User(BaseModel):
 class Topping(BaseModel):
     topping_name = CharField(unique=True)
 
+class Pizza_Order(BaseModel):
+    room_id = ForeignKeyField(Room)
+
 class Room(BaseModel):
     room_id = AutoField()
     room_code = CharField()
@@ -25,11 +28,7 @@ class Room_Membership(BaseModel):
     user_id = ForeignKeyField(User)
     room_id = ForeignKeyField(Room)
 
-class Pizza_Order(BaseModel):
-    room_id = ForeignKeyField(Room)
-    pizza_id
 
-class Pizza
 
 db.connect()
 db.create_tables([User, Topping])
