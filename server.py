@@ -28,6 +28,13 @@ async def order_read(order_id: str) -> Room:
 async def order_add_member(order_id: str, update: RoomUpdate):
     RoomRepo.update(order_id, update)
 
+@app.get(
+    "/order/code/{room_code}",
+    response_model=Room
+)
+async def order_read_code(room_code: str) -> Room:
+    return RoomRepo.get_code(room_code)
+
 @app.post(
     "/user",
     response_model=User

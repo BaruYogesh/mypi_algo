@@ -39,6 +39,13 @@ class RoomRepo:
 
         return Room(**doc)
 
+    @staticmethod 
+    def get_code(room_code: str) -> Room:
+
+        doc = collection['rooms'].find_one({"room_code": room_code})
+
+        return Room(**doc)
+
     @staticmethod
     def update(room_id: str, update: RoomUpdate):
         doc = update.dict()
