@@ -33,4 +33,4 @@ class PizzaFields:
 class ToppingFields:
 
     topping_id = Field()
-    name = Field()
+    topping_name = Field()

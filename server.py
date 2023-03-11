@@ -41,3 +41,15 @@ async def user_post(create: UserCreate) -> User:
 )
 async def user_read(user_id: str) -> User:
     return UserRepo.get(user_id)
+
+@app.get(
+    '/toppings/'
+)
+async def toppings_list() -> ListTopping:
+    return ToppingRepo.list()
+
+@app.post(
+    '/topping'
+)
+async def topping_post(create: ToppingCreate) -> Topping:
+    return ToppingRepo.create(create)

@@ -3,6 +3,8 @@ from models.room_update import RoomUpdate
 from models.room import Room
 from models.user_create import UserCreate
 from models.user import User
+from models.topping_create import ToppingCreate
+from models.topping import Topping, ListTopping
 from db import client, collection
 from utils import *
 from utils import get_code
@@ -66,3 +68,29 @@ class UserRepo:
         doc = collection['users'].find_one({"_id": user_id})
 
         return User(**doc)
+
+class ToppingRepo:
+
+    @staticmethod
+    def create(create: ToppingCreate) -> Topping:
+
+        doc = create.dict()
+
+        doc['_id'] = get_uuid()
+
+        result = collection['toppings'].insert_one(doc)
+
+        assert result.acknowledged
+        print(result.inserted_id)
+        return ToppingRepo.get(result.inserted_id)
+
+    def get(topping_id: str) -> Topping:
+
+        doc = collection['toppings'].find_one({'_id': topping_id})
+
+        return Topping(**doc)
+
+    def list() -> ListTopping:
+        cursor = collection['toppings'].find()
+
+        return [Topping(**d) for d in cursor]
