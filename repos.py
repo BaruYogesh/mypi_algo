@@ -60,7 +60,7 @@ class UserRepo:
         doc = create.dict()
 
         doc['_id'] = get_uuid()
-        doc['toppings'] = []
+        doc['toppings'] = create.toppings
 
         result = collection['users'].insert_one(doc)
 
