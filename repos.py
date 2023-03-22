@@ -2,7 +2,7 @@ from models.room_create import RoomCreate
 from models.room_update import RoomUpdate
 from models.room import Room
 from models.user_create import UserCreate
-from models.user import User
+from models.user import User, ListUser
 from models.topping_create import ToppingCreate
 from models.topping import Topping, ListTopping
 from db import client, collection
@@ -75,6 +75,13 @@ class UserRepo:
         doc = collection['users'].find_one({"_id": user_id})
 
         return User(**doc)
+
+    @staticmethod
+    def list(user_ids: list[str]) -> ListUser:
+
+        cursor = collection['users'].find({"_id": {"$in": user_ids}})
+
+        return [User(**d) for d in cursor]
 
 class ToppingRepo:
 

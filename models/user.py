@@ -14,3 +14,5 @@ class User(UserCreate):
         if document_id:
             data["user_id"] = document_id
         return data
+
+ListUser = list[User]

@@ -50,6 +50,12 @@ async def user_read(user_id: str) -> User:
     return UserRepo.get(user_id)
 
 @app.get(
+    '/users'
+)
+async def users_read(user_ids: list[str]) -> ListUser:
+    return UserRepo.list(user_ids)
+
+@app.get(
     '/toppings/'
 )
 async def toppings_list() -> ListTopping:
