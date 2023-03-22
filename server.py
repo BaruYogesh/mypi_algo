@@ -25,8 +25,8 @@ async def order_read(order_id: str) -> Room:
 @app.patch(
     "/order/add_member/{order_id}"
 )
-async def order_add_member(order_id: str, update: RoomUpdate):
-    RoomRepo.update(order_id, update)
+async def order_add_member(order_id: str, update: RoomUpdate) -> Room:
+    return RoomRepo.update(order_id, update)
 
 @app.get(
     "/order/code/{room_code}",

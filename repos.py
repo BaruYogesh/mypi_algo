@@ -47,10 +47,17 @@ class RoomRepo:
         return Room(**doc)
 
     @staticmethod
-    def update(room_id: str, update: RoomUpdate):
+    def update(room_id: str, update: RoomUpdate) -> Room:
+
+        prev_room = RoomRepo.get(room_id).dict()
+
         doc = update.dict()
 
+        doc['members'] = list(set(doc['members']).union(set(prev_room['members'])))
+
         result = collection['rooms'].update_one({'_id': room_id}, {'$set': doc})
+
+        return RoomRepo.get(room_id)
 
 class UserRepo:
 
