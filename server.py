@@ -49,7 +49,7 @@ async def user_post(create: UserCreate) -> User:
 async def user_read(user_id: str) -> User:
     return UserRepo.get(user_id)
 
-@app.get(
+@app.post(
     '/users'
 )
 async def users_read(user_ids: list[str]) -> ListUser:
