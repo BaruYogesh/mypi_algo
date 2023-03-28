@@ -127,8 +127,7 @@ def make_pizzas_two(toppings, prefs):
                         candidate_index = j
                     j = j + 1
 
-            # if length of candidate users is 0, don't select it
-            selected_pizzas.append((candidate_topping_set, len(candidate_users)))
+            selected_pizzas.append((candidate_topping_set, candidate_users))
             covered_users = covered_users.union(candidate_users)
 
             # if candidate is not at the index we started at, delete candidate, insert original at candidate's index
