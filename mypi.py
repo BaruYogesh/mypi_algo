@@ -55,7 +55,7 @@ def make_pizzas(toppings: set, prefs: list) -> list:
 
 
 def make_pizzas_two(toppings, prefs):
-    tolerance = 0.4 # tolerance for how much less users a topping set can cover and still be selected if it has more toppings
+    tolerance = 0.51 # tolerance for how much less users a topping set can cover and still be selected if it has more toppings
 
     toppings_powerset = [x for x in powerset(list(toppings))]
     toppings_powerset.remove([])
@@ -69,7 +69,7 @@ def make_pizzas_two(toppings, prefs):
                 topping_set_to_users[i][0].append(user)
 
     topping_set_to_users = sorted(topping_set_to_users, key=lambda x: -len(x[0]))
-    print(topping_set_to_users)
+    #print(topping_set_to_users)
 
     selected_pizzas = []
     covered_users = set()
@@ -80,6 +80,8 @@ def make_pizzas_two(toppings, prefs):
     i = 0
     while i < len(topping_set_to_users) and len(covered_users) < len(prefs):
         users, t = topping_set_to_users[i]
+
+        #print(i, t, users, len(covered_users))
 
         # if this topping set has no users that have already been covered, then try to select it
         if not len(covered_users.intersection(users)):
@@ -96,6 +98,8 @@ def make_pizzas_two(toppings, prefs):
 
                 # if this topping set has users that have already been covered, then apply the same logic as below to move it to the correct position
                 if len(covered_users.intersection(topping_set_to_users[j][0])):
+                    # print that this topping set has users that have already been covered and who they are
+                    #print("Topping set", topping_set_to_users[j][1], "has users that have already been covered:", covered_users.intersection(topping_set_to_users[j][0]))
                     topping_set_to_users[j][0] = list(
                         set(topping_set_to_users[j][0]) - covered_users
                     )
@@ -104,6 +108,12 @@ def make_pizzas_two(toppings, prefs):
                         for k in range(j, len(topping_set_to_users)):
                             if len(topping_set_to_users[k][0]) <= len(p[0]):
                                 topping_set_to_users.insert(k, p)
+                                #print("Inserted", p[1], "at", k)
+                            # if we reach the end of the list, then append it
+                        if(j == len(topping_set_to_users) - 1):
+                            topping_set_to_users.append(p)
+                            #print("Appended", p[1], "at", j + 1)
+                            break
                 # else if this topping set no longer has any users, then remove it
                 elif len(topping_set_to_users[j][0]) == 0:
                     topping_set_to_users.pop(j)
@@ -111,35 +121,56 @@ def make_pizzas_two(toppings, prefs):
                 else:
                     #print(topping_set_to_users[j])
                     # if there is a topping set with more toppings than candidate, then use that one instead 
-                    if(len(topping_set_to_users[j][1]) > len(candidate_topping_set)):
+                    if(len(topping_set_to_users[j][1]) > len(candidate_topping_set) and len(topping_set_to_users[j][0]) >0):
                         candidate_topping_set = topping_set_to_users[j][1]
                         candidate_users = topping_set_to_users[j][0]
                         candidate_index = j
                     j = j + 1
 
+            # if length of candidate users is 0, don't select it
             selected_pizzas.append((candidate_topping_set, len(candidate_users)))
             covered_users = covered_users.union(candidate_users)
 
             # if candidate is not at the index we started at, delete candidate, insert original at candidate's index
-            if candidate_index != i:
-                topping_set_to_users.pop(candidate_index)
-                topping_set_to_users.insert(candidate_index, [users, t])
+            # if candidate_index != i:
+            #     topping_set_to_users.pop(candidate_index)
+            #     topping_set_to_users.insert(candidate_index, [users, t])
 
-            i += 1
+            # if candidate is not at the index we started at, swap original with candidate
+            # if candidate_index != i:
+            #     topping_set_to_users[i], topping_set_to_users[candidate_index] = topping_set_to_users[candidate_index], topping_set_to_users[i]
+
+            # pop selected topping set, don't increment i
+            topping_set_to_users.pop(candidate_index)
+
+            #i += 1
 
         # if this topping set has no users at all, then remove it
         elif len(users) == 0:
             topping_set_to_users.pop(i)
         
         else:
+            # print that this topping set has users that have already been covered and who they are
+            #print("Topping set", t, "has users that have already been covered:", covered_users.intersection(users))
             topping_set_to_users[i][0] = list(
                 set(topping_set_to_users[i][0]) - covered_users
             )
+            
+            # if this topping set is still the most popular, leave it where it is
             p = topping_set_to_users.pop(i)
+            #print(p)
             if p[0]:
                 for j in range(i, len(topping_set_to_users)):
+                    #print(j, topping_set_to_users[j][1], len(topping_set_to_users[j][0]))
                     if len(topping_set_to_users[j][0]) <= len(p[0]):
                         topping_set_to_users.insert(j, p)
+                        #print("Inserted", p[1], "at", j)
+                        break
+                    # if we reach the end of the list, then append it
+                    if(j == len(topping_set_to_users) - 1):
+                        topping_set_to_users.append(p)
+                        #print("Appended", p[1], "at", j + 1)
+                        break
 
     print(selected_pizzas)
 
@@ -154,6 +185,41 @@ def make_pizzas_two(toppings, prefs):
 #     },
 # )
 
+# try make_pizzas_two with a large set of users that like both ham and pineapple, but a few that only like ham
+# make_pizzas_two(
+#     {"ham", "pineapple", "pepperoni", "sausage", "mushrooms", "onions"},
+#     {
+#         "jackson": {"ham", "pineapple"},
+#         "baru": {"ham", "pineapple"},
+#         "badri": {"ham", "pineapple"},
+#         "hawkins": {"ham", "pineapple"},
+#         "ethan": {"ham", "pineapple"},
+#         "jackson2": {"ham", "pineapple"},
+#         "baru2": {"ham", "pineapple"},
+#         "badri2": {"ham", "pineapple"},
+#         # "hawkins2": {"ham", "pineapple"},
+#         # "ethan2": {"ham", "pineapple"},
+#         # "jackson3": {"ham", "pineapple"},
+#         # "baru3": {"ham", "pineapple"},
+#         # "badri3": {"ham", "pineapple"},
+#         "ham_only": {"ham"},
+#         "ham_only2": {"ham"},
+#         "ham_only3": {"ham"},
+#         "ham_only4": {"ham"},
+#         "ham_only5": {"ham"},
+#         "ham_only6": {"ham"},
+#         "pepperoni_only": {"pepperoni"},
+#         "pepperoni_only2": {"pepperoni"},
+#         "pepperoni_only3": {"pepperoni"},
+#         "pepperoni_only4": {"pepperoni"},
+#         "pepperoni_only5": {"pepperoni"},
+#         "pepperoni_only6": {"pepperoni"},
+#         "pepperoni_only7": {"pepperoni"},
+#         "pepperoni_only8": {"pepperoni"},
+#         "pepperoni_only9": {"pepperoni"},
+#     }
+# )
+
 make_pizzas_two(
     {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
     {
@@ -162,7 +228,6 @@ make_pizzas_two(
         "badri": {"a", "c"},
         "hawkins": {"d"},
         "ethan": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
-        # give me some random pairs with less than 8 toppings
         "jackson2": {"a", "b"},
         "baru2": {"b", "d"},
         "badri2": {"a", "c"},
@@ -174,5 +239,13 @@ make_pizzas_two(
         "hawkins3": {"d"},
         "ethan3": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
         "jackson4": {"a", "b"},
+        "baru4": {"b", "d"},
+        "badri4": {"a", "c"},
+        "hawkins4": {"d"},
+        "ethan4": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
+        "jackson5": {"a", "b"},
+        "baru5": {"b", "d"},
+        "badri5": {"a", "c"},
+        "hawkins5": {"d"},
     },
 )
