@@ -22,6 +22,12 @@ async def order_post(create: RoomCreate) -> Room:
 async def order_read(order_id: str) -> Room:
     return RoomRepo.get(order_id)
 
+@app.post(
+    '/order/confirm/{order_id}'
+)
+async def order_confirm(order_id: str) -> Room:
+    return RoomRepo.make_order(order_id)
+
 @app.patch(
     "/order/add_member/{order_id}"
 )
@@ -66,3 +72,4 @@ async def toppings_list() -> ListTopping:
 )
 async def topping_post(create: ToppingCreate) -> Topping:
     return ToppingRepo.create(create)
+

@@ -1,7 +1,6 @@
 from .fields import RoomFields
 from .room_create import RoomCreate
-from .user import User
-from .topping import Topping
+from .pizza import Pizza
 from typing import List, Optional
 import pydantic
 
@@ -10,7 +9,7 @@ class Room(RoomCreate):
     room_id: str = RoomFields.room_id
     room_code: str = RoomFields.room_code
     members: Optional[List[str]] = RoomFields.members
-    pizza_order: Optional[List[Topping]] = RoomFields.pizza_order
+    pizza_order: Optional[List[Pizza]] = RoomFields.pizza_order
 
 
     @pydantic.root_validator(pre=True)

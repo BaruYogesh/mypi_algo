@@ -25,10 +25,10 @@ class RoomFields:
 
 class PizzaFields:
 
-    pizza_id = Field()
     toppings = Field(
         description='list of topping objects'
     )
+    quantity = Field()
 
 class ToppingFields:
 

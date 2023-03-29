@@ -1,5 +1,4 @@
-from collections import defaultdict
-
+from models import pizza, topping
 
 def powerset(seq):
     if len(seq) <= 1:
@@ -69,7 +68,6 @@ def make_pizzas_two(toppings, prefs):
                 topping_set_to_users[i][0].append(user)
 
     topping_set_to_users = sorted(topping_set_to_users, key=lambda x: -len(x[0]))
-    print(topping_set_to_users)
 
     selected_pizzas = []
     covered_users = set()
@@ -142,6 +140,7 @@ def make_pizzas_two(toppings, prefs):
                         topping_set_to_users.insert(j, p)
 
     print(selected_pizzas)
+    return selected_pizzas
 
 
 # make_pizzas_two(
@@ -154,25 +153,25 @@ def make_pizzas_two(toppings, prefs):
 #     },
 # )
 
-make_pizzas_two(
-    {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
-    {
-        "jackson": {"a", "b", "c"},
-        "baru": {"b", "d"},
-        "badri": {"a", "c"},
-        "hawkins": {"d"},
-        "ethan": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
-        # give me some random pairs with less than 8 toppings
-        "jackson2": {"a", "b"},
-        "baru2": {"b", "d"},
-        "badri2": {"a", "c"},
-        "hawkins2": {"d"},
-        "ethan2": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
-        "jackson3": {"a", "b"},
-        "baru3": {"b", "d"},
-        "badri3": {"a", "c"},
-        "hawkins3": {"d"},
-        "ethan3": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
-        "jackson4": {"a", "b"},
-    },
-)
+# make_pizzas_two(
+#     {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
+#     {
+#         "jackson": {"a", "b", "c"},
+#         "baru": {"b", "d"},
+#         "badri": {"a", "c"},
+#         "hawkins": {"d"},
+#         "ethan": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
+#         # give me some random pairs with less than 8 toppings
+#         "jackson2": {"a", "b"},
+#         "baru2": {"b", "d"},
+#         "badri2": {"a", "c"},
+#         "hawkins2": {"d"},
+#         "ethan2": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
+#         "jackson3": {"a", "b"},
+#         "baru3": {"b", "d"},
+#         "badri3": {"a", "c"},
+#         "hawkins3": {"d"},
+#         "ethan3": {"a", "b", "c", "d", "e", "f", "g", "h", "i"},
+#         "jackson4": {"a", "b"},
+#     },
+# )

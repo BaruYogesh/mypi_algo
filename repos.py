@@ -1,6 +1,7 @@
 from models.room_create import RoomCreate
 from models.room_update import RoomUpdate
 from models.room import Room
+from models.pizza import Pizza
 from models.user_create import UserCreate
 from models.user import User, ListUser
 from models.topping_create import ToppingCreate
@@ -8,6 +9,7 @@ from models.topping import Topping, ListTopping
 from db import client, collection
 from utils import *
 from utils import get_code
+from mypi import make_pizzas_two
 
 class RoomRepo:
 
@@ -59,6 +61,31 @@ class RoomRepo:
 
         return RoomRepo.get(room_id)
 
+    @staticmethod
+    def make_order(room_id: str) -> Room:
+
+        all_toppings = [t.topping_id for t in ToppingRepo.list()]
+
+        order = RoomRepo.get(room_id)
+        users = UserRepo.list(order.members)
+
+        prefs = {x.username: x.toppings for x in users}
+
+        pizza_order = make_pizzas_two(all_toppings, prefs)
+        pizzas: list[Pizza] = []
+        for toppings, quantity in pizza_order:
+            topping_list = [ToppingRepo.get(topping_id=t) for t in toppings]
+            new_pizza = Pizza(toppings=topping_list, quantity=quantity)
+            print(*new_pizza)
+            pizzas += new_pizza
+
+        print(pizzas)
+
+        order.pizza_order = [Pizza(*p) for p in pizzas]
+        result = collection['rooms'].update_one({'_id': room_id}, {'$set': order})
+        return RoomRepo.get(room_id)
+        
+
 class UserRepo:
 
     @staticmethod
@@ -85,8 +112,10 @@ class UserRepo:
 
     @staticmethod
     def list(user_ids: list[str]) -> ListUser:
-
-        cursor = collection['users'].find({"_id": {"$in": user_ids}})
+        if not user_ids:
+            cursor = collection['users'].find()
+        else:
+            cursor = collection['users'].find({"_id": {"$in": user_ids}})
 
         return [User(**d) for d in cursor]
 
