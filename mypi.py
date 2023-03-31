@@ -174,7 +174,7 @@ def make_pizzas_two(toppings, prefs):
                         #print("Appended", p[1], "at", j + 1)
                         break
 
-    print(selected_pizzas)
+    # print(selected_pizzas)
     return selected_pizzas
 
 

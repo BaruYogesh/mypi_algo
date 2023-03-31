@@ -73,16 +73,16 @@ class RoomRepo:
 
         pizza_order = make_pizzas_two(all_toppings, prefs)
         pizzas: list[Pizza] = []
-        for toppings, quantity in pizza_order:
-            topping_list = [ToppingRepo.get(topping_id=t) for t in toppings]
-            new_pizza = Pizza(toppings=topping_list, quantity=quantity)
-            print(*new_pizza)
-            pizzas += new_pizza
+        for toppings, users in pizza_order:
+            topping_list = [ToppingRepo.get(topping_id=t).dict() for t in toppings]
+            new_pizza = Pizza(toppings=topping_list, users=users)
+            print(new_pizza)
+            pizzas.append(new_pizza.dict())
 
         print(pizzas)
 
-        order.pizza_order = [Pizza(*p) for p in pizzas]
-        result = collection['rooms'].update_one({'_id': room_id}, {'$set': order})
+        order.pizza_order = pizzas
+        result = collection['rooms'].update_one({'_id': room_id}, {'$set': order.dict()})
         return RoomRepo.get(room_id)
         
 

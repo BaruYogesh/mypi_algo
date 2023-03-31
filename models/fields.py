@@ -28,7 +28,7 @@ class PizzaFields:
     toppings = Field(
         description='list of topping objects'
     )
-    quantity = Field()
+    users = Field()
 
 class ToppingFields:
 

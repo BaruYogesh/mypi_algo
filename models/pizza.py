@@ -5,6 +5,6 @@ from pydantic import BaseModel
 class Pizza(BaseModel):
 
     toppings: list[Topping] = PizzaFields.toppings
-    quantity: int = PizzaFields.quantity
+    users: list[str] = PizzaFields.users
 
 ListPizza = list[Pizza]
